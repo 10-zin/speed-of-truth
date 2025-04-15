@@ -1,3 +1,6 @@
 #fill it
+#ignore all files in data folder
+data/*
+
 
 .env
