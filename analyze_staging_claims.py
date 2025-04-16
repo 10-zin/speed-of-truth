@@ -3,8 +3,9 @@ import json
 import argparse
 from openai import OpenAI
 from typing import Dict, List, Any, Tuple
-from dotenv import load_dotenv
 from tqdm import tqdm
+from dotenv import load_dotenv
+
 # Load environment variables
 load_dotenv()
 client = OpenAI()
@@ -177,10 +178,13 @@ Response format:
             "reasoning": "Error parsing GPT-4 response"
         }
 
-def process_reddit_data(input_file: str, output_file: str, skip_with_deleted_parents: bool):
+def process_reddit_data(config):
     """
     Process the Reddit data file and analyze each comment.
     """
+    input_file = config.FLATTENED_DATA_FILENAME
+    output_file = config.STAGING_CLAIMS_ANALYSIS_FILENAME
+    skip_with_deleted_parents = config.SKIP_DELETED_PARENTS
     with open(input_file, 'r') as f:
         data = json.load(f)
     
@@ -235,16 +239,3 @@ def process_reddit_data(input_file: str, output_file: str, skip_with_deleted_par
         
         with open(output_file, 'w') as f:
             json.dump(output_data, f, indent=2)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Analyze Reddit comments for staging claims.')
-    parser.add_argument('--input', default="data/flattened_reddit_data_skipped.json",
-                      help='Input JSON file path')
-    parser.add_argument('--output', default="data/staging_claims_analysis_skipped.json",
-                      help='Output JSON file path')
-    parser.add_argument('--skip-deleted-parents', action='store_true',
-                      help='Skip comments if any parent content is deleted/removed')
-    
-    args = parser.parse_args()
-    
-    process_reddit_data(args.input, args.output, args.skip_deleted_parents) 

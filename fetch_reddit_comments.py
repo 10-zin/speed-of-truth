@@ -10,16 +10,7 @@ load_dotenv()
 
 # --- Configuration ---
 # Reddit API Credentials (loaded from .env or defaults)
-CLIENT_ID = os.getenv("CLIENT_ID", "YOUR_CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET", "YOUR_CLIENT_SECRET")
-USER_AGENT = os.getenv("USER_AGENT", "CommentFetcher/0.1 by YourUsername") # Use a specific user agent
 
-# Input and Output Filenames
-INPUT_JSON_FILENAME = "data/reddit_search_results.json"
-OUTPUT_JSON_FILENAME = "data/reddit_submissions_with_comments.json"
-
-# Delay between processing submissions (in seconds) to avoid rate limits
-DELAY_BETWEEN_SUBMISSIONS = 2 # Be nice to Reddit's API
 
 # --- End Configuration ---
 
@@ -59,10 +50,18 @@ def process_comment_node(comment):
 
     return comment_data
 
-def fetch_comments():
+def fetch_comments(config):
     """
     Loads submission data, fetches comments, and saves the combined data.
     """
+    CLIENT_ID = config.CLIENT_ID
+    CLIENT_SECRET = config.CLIENT_SECRET
+    USER_AGENT = config.USER_AGENT
+
+    INPUT_JSON_FILENAME = config.SEARCH_RESULTS_FILENAME
+    OUTPUT_JSON_FILENAME = config.SUBMISSIONS_WITH_COMMENTS_FILENAME
+
+    DELAY_BETWEEN_SUBMISSIONS = config.DELAY_BETWEEN_SUBMISSIONS # Be nice to Reddit's API
     # --- Input Validation and Setup ---
     if CLIENT_ID == "YOUR_CLIENT_ID" or CLIENT_SECRET == "YOUR_CLIENT_SECRET":
         print("ERROR: Please configure Reddit API credentials in your .env file.")
@@ -172,6 +171,3 @@ def fetch_comments():
         print(f"An unexpected error occurred while writing JSON: {e}")
 
     print("\n--- Comment Fetching Script Finished --- ")
-
-if __name__ == "__main__":
-    fetch_comments() 

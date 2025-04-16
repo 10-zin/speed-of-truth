@@ -5,50 +5,6 @@ import os
 from collections import defaultdict
 import re # Import regex for finding keyphrases
 import json # Import json library
-from dotenv import load_dotenv # Import dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
-# --- Configuration ---
-# Replace with your Reddit API credentials (loaded from .env or defaults)
-CLIENT_ID = os.getenv("CLIENT_ID", "YOUR_CLIENT_ID") # Replace default or set env var
-CLIENT_SECRET = os.getenv("CLIENT_SECRET", "YOUR_CLIENT_SECRET") # Replace default or set env var
-USER_AGENT = os.getenv("USER_AGENT", "KeyphraseSearcher/0.1 by YourUsername") # Replace default or set env var
-
-# List of keyphrases to search for (case-insensitive)
-TRUMP_KEYPHRASES = ["trump ear", "trump assassination ear", "trump assassination attempt", "trump blood ear", "trump bit lip"]
-
-KEYPHRASES = ["ghost of Kiev", "ghost of kyiv", "mig-29 legend", "stepan tarabalka" "ghost ukraine dcs footage"]
-# KEYPHRASES = ["trump assassination attempt staged"]
-TRUMP_CONTENT_KEYWORDS = ["ear", "bit", "lip", "trump", "bullet", "fake", "blood"]
-
-CONTENT_KEYWORDS = ["Ukraine", "Ukrainian", "Russia", "war", "mig-29", "ghost", "kiev", "kyiv", "legend"]
-SCORE_THRESHOLD = 20
-
-# Date range (YYYY-MM-DD)
-# START_DATE_STR = "2024-07-13"
-# END_DATE_STR = "2025-04-14"
-
-START_DATE_STR = "2022-02-24"
-END_DATE_STR = "2025-04-14"
-
-# Maximum number of ranked results to return
-MAX_RESULTS = 100
-
-# Subreddit to search (e.g., 'askreddit', 'python', 'all')
-# Searching 'all' can be very broad and might hit API limits faster.
-# Consider searching specific relevant subreddits in a loop if needed.
-
-TRUMP_SUBREDDITS_TO_SEARCH = ["Askpolitics", "politics", "conspiracytheories", "AnythingGoesNews", "conspiracy", "TrueUnpopularOpinion", "PoliticalOpinions", "pics", "moderatepolitics"] # List of subreddits
-
-SUBREDDITS_TO_SEARCH = ["Ukraine", "aviation", "conspiracytheories", "AnythingGoesNews", "conspiracy", "TrueUnpopularOpinion", "PoliticalOpinions", "pics", 
-                        "acecombat", "europe", "UkraineWarVideoReport", "UkrainianConflict", "awfuleverything", "Project_Wingman", "WarplanePorn", "Damnthatsinteresting",
-                        "TrevorHenderson", "MilitaryPorn", "memes", "RussianWarFootageV", "neoliberal", ""] # List of subreddits
-# SUBREDDITS_TO_SEARCH = ["memes", "UkraineWarVideoReport", "acecombat"]
-
-# Output JSON filename
-OUTPUT_FILENAME = "data/reddit_search_results.json"
 
 # --- End Configuration ---
 
@@ -76,10 +32,22 @@ def get_keyphrase_match_percentage(text, keyphrases):
     score = (found_count / len(keyphrases)) * 100 if keyphrases else 0.0
     return score, matched_keywords
 
-def search_reddit():
+def search_reddit(config):
     """
     Searches Reddit for submissions matching the criteria and ranks them.
     """
+    CLIENT_ID = config.CLIENT_ID
+    CLIENT_SECRET = config.CLIENT_SECRET
+    USER_AGENT = config.USER_AGENT
+    SCORE_THRESHOLD = config.SCORE_THRESHOLD
+    START_DATE_STR = config.START_DATE_STR
+    END_DATE_STR = config.END_DATE_STR
+    MAX_RESULTS = config.MAX_RESULTS
+    SUBREDDITS_TO_SEARCH = config.SUBREDDITS_TO_SEARCH
+    KEYPHRASES = config.KEYPHRASES
+    CONTENT_KEYWORDS = config.CONTENT_KEYWORDS
+    OUTPUT_FILENAME = config.SEARCH_RESULTS_FILENAME
+    
     if CLIENT_ID == "YOUR_CLIENT_ID" or CLIENT_SECRET == "YOUR_CLIENT_SECRET":
         print("ERROR: Please replace 'YOUR_CLIENT_ID' and 'YOUR_CLIENT_SECRET' in your .env file or environment variables.")
         return
@@ -262,5 +230,5 @@ def search_reddit():
     else:
         print("No results were saved.")
 
-if __name__ == "__main__":
-    search_reddit() 
+# if __name__ == "__main__":
+#     search_reddit() 

@@ -106,10 +106,10 @@ def process_post(post: Dict[str, Any], flattened_items: List[Dict[str, Any]]) ->
             flattened_items
         )
 
-def main():
+def main(config):
     # Input and output file paths
-    input_file = Path('data/reddit_submissions_with_comments.json')
-    output_file = Path('data/flattened_reddit_data.json')
+    input_file = config.SUBMISSIONS_WITH_COMMENTS_FILENAME
+    output_file = config.FLATTENED_DATA_FILENAME
     
     # Read the input JSON file
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -126,6 +126,3 @@ def main():
     # Write the flattened data to a new JSON file
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(flattened_items, f, indent=4, ensure_ascii=False)
-
-if __name__ == '__main__':
-    main() 
